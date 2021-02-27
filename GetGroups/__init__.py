@@ -13,18 +13,27 @@ load_dotenv()
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
+    logging.info('Request headers: %s', req.headers)
 
     client_id = '382b58c4-60a3-4a2c-bd43-05692e40c15d'
     authority = \
-        'https://login.microsoftonline.com/clunacy.onmicrosoft.com/v2.0'
+        'https://login.microsoftonline.com/clunacy.onmicrosoft.com'
     client_credential = os.environ['CLIENT_CREDENTIAL']
     scopes = ['https://graph.microsoft.com/.default']
 
-    msal_app = msal.ConfidentialClientApplication(
-        client_id,
-        authority=authority,
-        client_credential=client_credential,
-    )
+    try:
+        msal_app = msal.ConfidentialClientApplication(
+            client_id,
+            authority=authority,
+            client_credential=client_credential,
+        )
+    except Exception:
+        return func.HttpResponse(
+            json.dumps({'error': 'Unable to initialize MSAL client'}),
+            mimetype='application/json',
+            status_code=503,
+        )
+
     token_resp = msal_app.acquire_token_for_client(scopes)
 
     try:
