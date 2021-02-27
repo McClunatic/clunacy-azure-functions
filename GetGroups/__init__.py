@@ -61,7 +61,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         logging.info('Python HTTP received response from Graph: %s', content)
 
         return func.HttpResponse(
-            json.dumps(content),
+            json.dumps([group['displayName'] for group in content]),
             mimetype='application/json',
             status_code=200,
         )
