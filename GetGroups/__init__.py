@@ -36,15 +36,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             status_code=401,
         )
 
-    userid = req.params.get('userid')
-    if not userid:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            userid = req_body.get('userid')
-
+    userid = req.route_params.get('userid')
     if not userid:
         return func.HttpResponse(
             json.dumps({'error': 'No userid specifid'}),

@@ -9,7 +9,8 @@
       "methods": [
         "get",
         "post"
-      ]
+      ],
+      "route": "groups/{userid:alpha}"
     },
     {
       "type": "http",
