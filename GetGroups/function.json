@@ -10,7 +10,7 @@
         "get",
         "post"
       ],
-      "route": "groups/{userid:alpha}"
+      "route": "groups/{userid:guid}"
     },
     {
       "type": "http",
