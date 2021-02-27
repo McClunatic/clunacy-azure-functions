@@ -13,7 +13,6 @@ load_dotenv()
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
-    logging.info('Request headers: %s', req.headers)
 
     client_id = '382b58c4-60a3-4a2c-bd43-05692e40c15d'
     authority = \
@@ -35,7 +34,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         )
 
     token_resp = msal_app.acquire_token_for_client(scopes)
-
     try:
         access_token = token_resp['access_token']
     except KeyError:
@@ -59,29 +57,18 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             f'https://graph.microsoft.com/v1.0/users/{userid}/memberOf',
             headers=headers,
         )
-        resp_json = api_resp.json()
-        logging.info('Python HTTP received response from Graph: %s', resp_json)
+        content = api_resp.json()['value']
+        logging.info('Python HTTP received response from Graph: %s', content)
 
-        for group in resp_json['value']:
-            groupid = group['id']
-            res = requests.get(
-                f'https://graph.microsoft.com/v1.0/groups/{groupid}',
-                headers=headers,
-            ).json()
-            logging.info('Group %s: %s', groupid, res)
-
-        # groups = [
-        #     (d['@odata.type'], d['displayName']) for d in resp_json['value']
-        # ]
+        groups = {grp['@odata.type']: grp['displayName'] for grp in content}
         return func.HttpResponse(
-            # json.dumps(groups),
-            json.dumps(resp_json),
+            json.dumps(groups),
             mimetype='application/json',
             status_code=200,
         )
     except (requests.HTTPError, requests.RequestException) as exc:
         return func.HttpResponse(
-            json.dumps({'error': f'Exception caught: {exc}'}),
+            json.dumps({'error': f'Exception caught querying Graph: {exc}'}),
             mimetype='application/json',
-            status_code=503,
+            status_code=500,
         )
