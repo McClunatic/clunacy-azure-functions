@@ -62,6 +62,14 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         resp_json = api_resp.json()
         logging.info('Python HTTP received response from Graph: %s', resp_json)
 
+        for group in resp_json['value']:
+            groupid = group['id']
+            res = requests.get(
+                f'https://graph.microsoft.com/v1.0/groups/{groupid}',
+                headers=headers,
+            ).json()
+            logging.info('Group %s: %s', groupid, res)
+
         # groups = [
         #     (d['@odata.type'], d['displayName']) for d in resp_json['value']
         # ]
