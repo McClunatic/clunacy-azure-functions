@@ -53,11 +53,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         resp_json = api_resp.json()
         logging.info('Python HTTP received response from Graph: %s', resp_json)
 
-        groups = [
-            (d['@odata.type'], d['displayName']) for d in resp_json['value']
-        ]
+        # groups = [
+        #     (d['@odata.type'], d['displayName']) for d in resp_json['value']
+        # ]
         return func.HttpResponse(
-            json.dumps(groups),
+            # json.dumps(groups),
+            resp_json,
             mimetype='application/json',
             status_code=200,
         )
