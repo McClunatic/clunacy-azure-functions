@@ -52,16 +52,25 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             status_code=400,
         )
 
-    headers = {'Authorization': f'Bearer {access_token}'}
-    api_resp = requests.get(
-        f'https://graph.microsoft.com/v1.0/users/{userid}/memberOf',
-        headers=headers,
-    )
-    resp_json = api_resp.json()
+    try:
+        headers = {'Authorization': f'Bearer {access_token}'}
+        api_resp = requests.get(
+            f'https://graph.microsoft.com/v1.0/users/{userid}/memberOf',
+            headers=headers,
+        )
+        resp_json = api_resp.json()
 
-    groups = [(d['@odata.type'], d['displayName']) for d in resp_json['value']]
-    return func.HttpResponse(
-        json.dumps(groups),
-        mimetype='application/json',
-        status_code=200,
-    )
+        groups = [
+            (d['@odata.type'], d['displayName']) for d in resp_json['value']
+        ]
+        return func.HttpResponse(
+            json.dumps(groups),
+            mimetype='application/json',
+            status_code=200,
+        )
+    except (requests.HTTPError, requests.RequestException) as exc:
+        return func.HttpResponse(
+            json.dumps({'error': f'Exception caught: {exc}'}),
+            mimetype='application/json',
+            status_code=503,
+        )
