@@ -14,9 +14,9 @@ load_dotenv()
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
-    client_id = 'c434aa12-501f-4267-957f-cca6d16f0edd'
+    client_id = '382b58c4-60a3-4a2c-bd43-05692e40c15d'
     authority = \
-        'https://login.microsoftonline.com/bpmcclunegmail.onmicrosoft.com'
+        'https://login.microsoftonline.com/clunacy.onmicrosoft.com/v2.0'
     client_credential = os.environ['CLIENT_CREDENTIAL']
     scopes = ['https://graph.microsoft.com/.default']
 
