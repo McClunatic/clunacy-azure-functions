@@ -51,6 +51,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             headers=headers,
         )
         resp_json = api_resp.json()
+        logging.info('Python HTTP received response from Graph: %s', resp_json)
 
         groups = [
             (d['@odata.type'], d['displayName']) for d in resp_json['value']
