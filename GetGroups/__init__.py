@@ -60,8 +60,9 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         content = api_resp.json()['value']
         logging.info('Python HTTP received response from Graph: %s', content)
 
+        response = {'groups': [group['displayName'] for group in content]}
         return func.HttpResponse(
-            json.dumps([group['displayName'] for group in content]),
+            json.dumps(response),
             mimetype='application/json',
             status_code=200,
         )
